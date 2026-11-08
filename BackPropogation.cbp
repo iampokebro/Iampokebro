@@ -45,6 +45,7 @@
 			<Add directory="C:/Program Files/SFML-3.0.2/lib" />
 		</Linker>
 		<Unit filename="Body.h" />
+		<Unit filename="CSV.h" />
 		<Unit filename="Cell.h" />
 		<Unit filename="Wire.h" />
 		<Unit filename="main.cpp" />

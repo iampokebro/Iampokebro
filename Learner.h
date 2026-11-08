@@ -26,19 +26,16 @@ void LoadData(std::string& fPath) {
 
     constexpr size_t INPUT_SIZE = CELL_COUNT * CELL_COUNT;
 
-    if (data.size() != INPUT_SIZE + 1) {
-        std::cout << "Invalid dataset: " << fPath << '\n';
-        return;
-    }
-
     NN.label = data[0] - '0';
 
     for (size_t i = 0; i < INPUT_SIZE; i++) {
         NN.Input[i].Val = (data[i + 1] == '1') ? 1.f : 0.f;
     }
 
-    NN.Forward();
-    NN.Backward();
+    //for (unsigned int i = 0; i < T_STEP; i++) {
+        NN.Forward();
+        NN.Backward();
+    //}
 }
 
 void LoadFiles(std::string& Path) {
@@ -46,6 +43,7 @@ void LoadFiles(std::string& Path) {
         if (file.is_regular_file() && file.path().extension() == ".txt") {
             std::string fpath = file.path().string();
             //fpath += file.path().filename().string();
+            //std::cout << "Data Loaded : " << fpath << "\n";
 
             LoadData(fpath);
         }
@@ -61,3 +59,4 @@ void Load() {
     }
 
 }
+

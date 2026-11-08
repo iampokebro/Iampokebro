@@ -10,7 +10,7 @@ inline void Softmax(std::vector<float>& logits);
 
 float ReLU();
 
-constexpr float learing_rate = 0.001f;
+constexpr float learing_rate = 0.005f;
 
 template<uint16_t IL = 16, uint16_t HL = 16, uint16_t HRL = 16, uint16_t OL = 16>
 struct Neural {
@@ -79,7 +79,7 @@ struct Neural {
                 Hid->Val += Input[i].Val * W->Weight;
             }
             Hid->Val += Hid->Bias;
-            Hid->Val = std::max(0.f, Hid->Val);
+            Hid->Val = (Hid->Val > 0.f) ? Hid->Val : (0.01f * Hid->Val);
         }
 
         //hidden
@@ -93,7 +93,7 @@ struct Neural {
                     Hid->Val += H.Val * W->Weight;
                 }
                 Hid->Val += Hid->Bias;
-                Hid->Val = std::max(0.f, Hid->Val);
+                Hid->Val = (Hid->Val > 0.f) ? Hid->Val : (0.01f * Hid->Val);
             }
         }
 
@@ -142,12 +142,13 @@ struct Neural {
             Cell<1>* OP = &Output[i];
             float target = (i == label) ? 1.0f : 0.0f;
 
+
             OP->error = (OP->Val - target);
 
             for (uint16_t h = 0; h < HL; h++) {
                 Cell<HL>& H = Hidden[HRL-1][h];
                 std::unique_ptr<Wire>& W = H.Wires[i];
-                float relu = (H.Val > 0.f) ? 1.f : 0.f;
+                float relu = (H.Val > 0.f) ? 1.f : 0.01f;
                 float oldWeight = W->Weight;
 
                 H.error += OP->error * oldWeight * relu;
@@ -165,7 +166,7 @@ struct Neural {
                 for (uint16_t h = 0; h < HL; h++) {
                     Cell<HL>& H = Hidden[l - 1][h];
                     std::unique_ptr<Wire>& W = H.Wires[i];
-                    float relu = (H.Val > 0.f) ? 1.f : 0.f;
+                    float relu = (H.Val > 0.f) ? 1.f : 0.01f;
 
                     float oldWeight = W->Weight;
 
@@ -185,7 +186,7 @@ struct Neural {
             for (uint16_t k = 0; k < IL; k++) {
                 Cell<HL>& H = Input[k];
                 std::unique_ptr<Wire>& W = H.Wires[i];
-                float relu = (H.Val > 0.f) ? 1.f : 0.f;
+                float relu = (H.Val > 0.f) ? 1.f : 0.01f;
                 float oldWeight = W->Weight;
 
                 H.error += OP.error * oldWeight * relu;
